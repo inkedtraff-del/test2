@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>30-Day System</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #e5e5e5;
+            display: flex;
+            justify-content: center;
+            font-family: 'Poppins', sans-serif;
+            color: #4B423C; /* Глобальный цвет текста */
+        }
+
+        .mobile-wrapper {
+            width: 100%;
+            max-width: 480px;
+            
+            /* ФОН ПРИЛОЖЕНИЯ */
+            background-color: #F4EFE6; 
+            background-image: url('assets/Group 1248 (2).jpg'); /* Твоя картинка на фоне */
+            background-size: 100% auto; 
+            background-position: top center; 
+            background-repeat: no-repeat; 
+            
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- ВЕРХНИЙ БЛОК И ИКОНКИ --- */
+        .hero-container {
+            position: relative;
+            padding: 20px 20px 15px 20px;
+            width: 100%;
+        }
+        .hero-container img.main-hero-img {
+            width: 100%;
+            display: block;
+            border-radius: 16px;
+        }
+        
+        .top-nav-row {
+            position: absolute;
+            top: 40px;
+            right: 40px; 
+            display: flex;
+            gap: 12px;
+            z-index: 10;
+        }
+        .top-nav-row img {
+            width: 30px; 
+            height: 30px;
+            display: block;
+            object-fit: contain;
+        }
+
+        /* --- КНОПКИ ВЫБОРА ПЛАНА --- */
+        .plans-container {
+            display: flex;
+            flex-direction: column;
+            padding: 0 20px 25px 20px;
+            width: 100%; 
+        }
+        .choose-plan-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            color: #4B423C;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .buttons-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .plan-btn {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(191, 208, 198, 0.5); 
+            border: none; 
+            border-radius: 12px;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        .plan-left { display: flex; align-items: center; gap: 10px; }
+        
+        .plan-dot-outer {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid #4B423C; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+        }
+        .plan-dot-inner {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #4B423C; 
+        }
+
+        .plan-name { font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: #4B423C; }
+        .plan-right { display: flex; align-items: baseline; gap: 6px; }
+        
+        .old-price { font-size: 13px; color: rgba(75, 66, 60, 0.6); text-decoration: line-through; font-weight: 400; } 
+        .new-price { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 600; color: #4B423C; } 
+
+        /* --- ЗАГОЛОВКИ СЕКЦИЙ --- */
+        .section-header { padding: 25px 20px 12px 20px; }
+        
+        h2 { 
+            font-family: 'Poppins', sans-serif; 
+            font-weight: 400; /* Regular */
+            font-size: 22px; 
+            color: #4B423C; 
+            margin-bottom: 4px; 
+        }
+        
+        p.subtitle { 
+            font-family: 'Poppins', sans-serif; 
+            font-weight: 200; /* Extra light */
+            font-size: 13px; 
+            color: #4B423C; 
+        }
+
+        /* --- СЛАЙДЕРЫ --- */
+        .slider-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding: 0 20px 5px 20px; 
+            scroll-padding-left: 20px;
+            gap: 12px;
+            scrollbar-width: none; 
+        }
+        .slider-container::-webkit-scrollbar { display: none; }
+        
+        .slider-container > img {
+            flex: 0 0 85%;
+            scroll-snap-align: start;
+            display: block;
+            width: 100%;
+        }
+        
+        .square-slider > img { border-radius: 0 !important; }
+
+        /* --- ТОЧКИ ДЛЯ СЛАЙДЕРОВ --- */
+        .slider-dots {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            padding-bottom: 15px; 
+        }
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: rgba(75, 66, 60, 0.2); 
+            transition: all 0.3s ease;
+        }
+        .dot.active {
+            background-color: rgba(75, 66, 60, 0.8); 
+            transform: scale(1.2); 
+        }
+
+        /* --- ОДИНОЧНЫЕ КАРТИНКИ --- */
+        .single-fit-image {
+            width: 100%;
+            padding: 0 20px 15px 20px;
+        }
+        .single-fit-image img {
+            width: 100%; 
+            height: auto;
+            display: block;
+            border-radius: 12px;
+        }
+
+        /* --- ЗИГЗАГ (One-time purchase) --- */
+        .purchase-zigzag {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            padding: 10px 20px 40px 20px;
+        }
+        .zigzag-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .zigzag-img {
+            width: 48%;
+            border-radius: 12px;
+            object-fit: cover;
+            aspect-ratio: 4/3;
+        }
+        .zigzag-content {
+            width: 52%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .zigzag-content p {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 200; /* Extra light */
+            font-size: 11px;
+            color: #4B423C;
+            line-height: 1.4;
+            margin-bottom: 16px;
+        }
+        .zigzag-content p strong {
+            color: #4B423C;
+            font-weight: 400; /* Regular */
+        }
+        .btn-mint {
+            background-color: #E4EBE5; 
+            color: #4B423C;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 13px;
+            padding: 12px 10px;
+            border-radius: 12px;
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+            border: 1px solid #C4D1C5;
+            line-height: 1.2;
+        }
+
+        /* --- ПОДВАЛ --- */
+        .footer-block {
+            padding: 0 20px 40px 20px;
+        }
+        .footer-explore {
+            font-family: 'Poppins', sans-serif;
+            color: #4B423C; 
+            font-size: 20px;
+            font-weight: 400; /* Regular */
+            margin-bottom: 8px;
+        }
+        .footer-text {
+            font-size: 14px;
+            color: #4B423C;
+            margin-bottom: 24px;
+            font-weight: 400;
+        }
+        .footer-text a.email-link {
+            color: #4B423C;
+            text-decoration: none;
+            font-weight: 400;
+        }
+        
+        .footer-links-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .footer-links-row a {
+            color: #4B423C;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body>
+
+<div class="mobile-wrapper">
+    
+    <div class="hero-container">
+        <div class="top-nav-row">
+            <a href="#"><img src="assets/instagram.png" alt="Instagram"></a>
+            <a href="#"><img src="assets/facebook.png" alt="Facebook"></a>
+        </div>
+        <img src="assets/hero-bg.png" class="main-hero-img" alt="START BUILDING YOUR SYSTEM TODAY">
+    </div> 
+
+    <div class="plans-container">
+        <div class="buttons-wrapper">
+            <a href="#footer" class="plan-btn">
+                <div class="plan-left">
+                    <div class="plan-dot-outer"><div class="plan-dot-inner"></div></div>
+                    <span class="plan-name">7-day reset</span>
+                </div>
+                <div class="plan-right">
+                    <span class="old-price">39$</span>
+                    <span class="new-price">19$</span>
+                </div>
+            </a>
+            <a href="#footer" class="plan-btn">
+                <div class="plan-left">
+                    <div class="plan-dot-outer"><div class="plan-dot-inner"></div></div>
+                    <span class="plan-name">30-day reset</span>
+                </div>
+                <div class="plan-right">
+                    <span class="old-price">59$</span>
+                    <span class="new-price">29$</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="section-header">
+        <h2>Your transformation includes:</h2>
+    </div>
+    <div class="slider-container square-slider">
+        <img src="assets/include-1.png" alt="Include 1">
+        <img src="assets/include-2.png" alt="Include 2">
+        <img src="assets/include-3.png" alt="Include 3">
+        <img src="assets/include-4.png" alt="Include 4">
+        <img src="assets/include-5.png" alt="Include 5">
+    </div>
+
+    <div class="section-header">
+        <h2>The results speak for themselves</h2>
+        <p class="subtitle">Results shared by our community</p>
+    </div>
+    <div class="single-fit-image">
+        <img src="assets/proof-combined.png" alt="Reviews">
+    </div>
+
+    <div class="section-header" id="look-inside">
+        <h2>The results speak for themselves</h2>
+        <p class="subtitle">Results shared by our community</p>
+    </div>
+    <div class="slider-container square-slider">
+        <img src="assets/1.png" alt="7-Day Energy Reset 1">
+        <img src="assets/2.png" alt="7-Day Energy Reset 2">
+        <img src="assets/3.png" alt="7-Day Energy Reset 3">
+        <img src="assets/4.png" alt="7-Day Energy Reset 4">
+    </div>
+
+    <div class="section-header" id="whats-inside">
+        <h2>The evidence is in the transformation</h2>
+        <p class="subtitle">Success stories from our customers</p>
+    </div>
+    <div class="single-fit-image">
+        <img src="assets/evidence-img.png" alt="Evidence Presentation">
+    </div>
+
+    <div class="section-header">
+        <h2>One-time purchase, permanent use</h2>
+        <p class="subtitle">Download the interactive PDF guide once and rerun the protocol anytime</p>
+    </div>
+    
+    <div class="purchase-zigzag">
+        <div class="zigzag-row">
+            <img src="assets/purchase-1.png" class="zigzag-img" alt="Start 7 days">
+            <div class="zigzag-content">
+                <p><strong>In just 7 days,</strong> you'll begin resetting your energy, confidence, femininity, and daily habits through a simple yet powerful transformation system designed for modern women</p>
+                <a href="#footer" class="btn-mint">Start 7-day<br>transformation</a>
+            </div>
+        </div>
+        
+        <div class="zigzag-row">
+            <div class="zigzag-content">
+                <p><strong>Over 30 days,</strong> you'll build feminine confidence, emotional balance, self-worth, and a magnetic presence through a complete transformation system</p>
+                <a href="#footer" class="btn-mint">Start 30-day<br>transformation</a>
+            </div>
+            <img src="assets/purchase-2.png" class="zigzag-img" alt="Start 30 days">
+        </div>
+    </div>
+
+    <div class="footer-block" id="footer">
+        <h3 class="footer-explore">Explore</h3>
+        
+        <p class="footer-text">
+            E-Mail: <a href="mailto:lumaflow.balance@gmail.com" class="email-link">lumaflow.balance@gmail.com</a>
+        </p>
+        
+        <div class="footer-links-row">
+            <a href="#public-offer">Public Offer</a>
+            <a href="#privacy-policy">Privacy Policy</a>
+            <a href="#founder">Founder</a>
+        </div>
+
+        <img src="assets/footer.png" style="width: 50%; display: block; margin: 0 auto; border-radius: 6px;" alt="Payments">
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sliders = document.querySelectorAll('.slider-container');
+
+        sliders.forEach(slider => {
+            const slides = slider.querySelectorAll('img');
+            if (slides.length <= 1) return; 
+
+            const dotsContainer = document.createElement('div');
+            dotsContainer.classList.add('slider-dots');
+            slider.parentNode.insertBefore(dotsContainer, slider.nextSibling);
+
+            slides.forEach((_, i) => {
+                const dot = document.createElement('div');
+                dot.classList.add('dot');
+                if (i === 0) dot.classList.add('active'); 
+                dotsContainer.appendChild(dot);
+            });
+
+            const dots = dotsContainer.querySelectorAll('.dot');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const index = Array.from(slides).indexOf(entry.target);
+                        dots.forEach((dot, i) => {
+                            dot.classList.toggle('active', i === index);
+                        });
+                    }
+                });
+            }, {
+                root: slider,
+                threshold: 0.5 
+            });
+
+            slides.forEach(slide => observer.observe(slide));
+        });
+    });
+</script>
+
+</body>
+</html>
