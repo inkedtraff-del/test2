@@ -1,36 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <!-- Meta Pixel Code -->
-<script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    
-    // Инициализация с рандомными цифрами
-    fbq('init', '888999111222333'); 
-    
-    // 1. Просмотр страницы
-    fbq('track', 'PageView');
-    
-    // 2. Лид
-    fbq('track', 'Lead');
-    
-    // 3. Покупка 
-    fbq('track', 'Purchase', {
-      value: 250.00,
-      currency: 'MYR' 
-    });
-    </script>
-    <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=888999111222333&ev=PageView&noscript=1"
-    /></noscript>
-    <!-- End Meta Pixel Code -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>30-Day System</title>
@@ -312,6 +282,25 @@
             font-weight: 400;
         }
     </style>
+
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1265005425177981');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1265005425177981&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
+    
 </head>
 <body>
 
@@ -398,14 +387,16 @@
             <img src="assets/purchase-1.png" class="zigzag-img" alt="Start 7 days">
             <div class="zigzag-content">
                 <p><strong>In just 7 days,</strong> you'll begin resetting your energy, confidence, femininity, and daily habits through a simple yet powerful transformation system designed for modern women</p>
-                <a href="https://whop.com/checkout/plan_VUbIgGaMWfrqR" class="btn-mint">Start 7-day<br>transformation</a>
+                <!-- Добавлен id="buy-7" -->
+                <a href="https://whop.com/checkout/plan_VUbIgGaMWfrqR" id="buy-7" class="btn-mint">Start 7-day<br>transformation</a>
             </div>
         </div>
         
         <div class="zigzag-row">
             <div class="zigzag-content">
                 <p><strong>Over 30 days,</strong> you'll build feminine confidence, emotional balance, self-worth, and a magnetic presence through a complete transformation system</p>
-                <a href="https://whop.com/checkout/plan_NzDz2fSL1z4aG" class="btn-mint">Start 30-day<br>transformation</a>
+                <!-- Добавлен id="buy-30" -->
+                <a href="https://whop.com/checkout/plan_NzDz2fSL1z4aG" id="buy-30" class="btn-mint">Start 30-day<br>transformation</a>
             </div>
             <img src="assets/purchase-2.png" class="zigzag-img" alt="Start 30 days">
         </div>
@@ -467,6 +458,59 @@
             slides.forEach(slide => observer.observe(slide));
         });
     });
+
+    // --- КОД ДЛЯ ПИКСЕЛЯ И СОБЫТИЙ ---
+
+    // 1. ОТСЛЕЖИВАНИЕ СКРОЛЛА (Scroll Depth)
+    let scrolled50 = false;
+    let scrolled90 = false;
+
+    window.addEventListener('scroll', function() {
+        let scrollPercent = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+        
+        if (scrollPercent >= 50 && !scrolled50) {
+            if (typeof fbq === 'function') fbq('trackCustom', 'ScrollDepth', { depth: '50%' });
+            scrolled50 = true;
+        }
+        if (scrollPercent >= 90 && !scrolled90) {
+            if (typeof fbq === 'function') fbq('trackCustom', 'ScrollDepth', { depth: '90%' });
+            scrolled90 = true;
+        }
+    });
+
+    // 2. ОТСЛЕЖИВАНИЕ ПЕРЕХОДА К ОПЛАТЕ (InitiateCheckout)
+    function trackCheckoutAndRedirect(event, planName, price, currency, redirectUrl) {
+        event.preventDefault(); 
+        
+        if (typeof fbq === 'function') {
+            fbq('track', 'InitiateCheckout', {
+                content_name: planName,
+                value: price,
+                currency: currency
+            });
+        }
+
+        // Ждем 300мс, чтобы пиксель успел отправить данные, и перенаправляем юзера
+        setTimeout(function() {
+            window.location.href = redirectUrl;
+        }, 300);
+    }
+
+    // Вешаем событие на кнопку 7-дневного плана (19$)
+    const buy7Btn = document.getElementById('buy-7');
+    if (buy7Btn) {
+        buy7Btn.addEventListener('click', function(e) {
+            trackCheckoutAndRedirect(e, '7-Day Reset', 19.00, 'USD', this.href);
+        });
+    }
+
+    // Вешаем событие на кнопку 30-дневного плана (29$)
+    const buy30Btn = document.getElementById('buy-30');
+    if (buy30Btn) {
+        buy30Btn.addEventListener('click', function(e) {
+            trackCheckoutAndRedirect(e, '30-Day System', 29.00, 'USD', this.href);
+        });
+    }
 </script>
 
 </body>
